@@ -1,5 +1,6 @@
 package com.theono.securitywithjwt.config;
 
+import com.theono.securitywithjwt.jwt.JwtFilter;
 import com.theono.securitywithjwt.jwt.JwtUtil;
 import com.theono.securitywithjwt.jwt.LoginFilter;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +63,11 @@ public class WebSecurityConfig {
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated());
 
-        //필터 등록
+        //jwt filter 등록
+        http
+                .addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
+
+        //login 필터 등록
         http
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
 

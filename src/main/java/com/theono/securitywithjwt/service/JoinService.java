@@ -16,17 +16,17 @@ public class JoinService {
 
     public void joinProcess(JoinDto joinDto){
 
-        String userId = joinDto.getUserId();
+        String username = joinDto.getUsername();
         String password = joinDto.getPassword();
 
-        Boolean isExist = userRepository.existsByUserId(userId);
+        Boolean isExist = userRepository.existsByUsername(username);
 
         if(isExist){
             return;
         }
 
         userRepository.save(UserEntity.builder()
-                .userId(userId)
+                .username(username)
                 .password(bCryptPasswordEncoder.encode(password))
                 .role("ROLE_USER")
                 .build());

@@ -10,6 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 public class JoinDto {
 
-    private String userId;
+    private String username;
     private String password;
 }

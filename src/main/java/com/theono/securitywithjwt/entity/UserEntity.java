@@ -18,12 +18,12 @@ public class UserEntity {
     private long id;
 
     @Column(unique = true)
-    private String userId;
+    private String username;
     private String password;
     private String role;
 
-    public UserEntity(String userId, String password, String role) {
-        this.userId = userId;
+    public UserEntity(String username, String password, String role) {
+        this.username = username;
         this.password = password;
         this.role = role;
     }

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>GETIS2.0</title>
+	<!-- 나의 스타일 추가 -->
+	<link rel="stylesheet" type="text/css" th:href="@{/css/login.css}">
+
+</head>
+
+<body>
+	<div class="container">
+		<img id="mainLogo" th:src="@{/image/main_logo.png}" alt="Main Logo">
+		<section class="login-form">
+
+			<select id="language" class="select" onchange="changeFn()">
+				<option value="ko">한국어</option>
+				<option value="en">영어</option>
+				<option value="jp">일본어</option>
+				<option value="ch">중국어</option>
+			</select>
+
+
+			<div class="int-area">
+				<input type="text" name="userId" id="userId" autocomplete="off" required>
+				<label for="userId">아이디</label>
+			</div>
+			<div class="int-area">
+				<input type="password" name="password" id="password" autocomplete="off" required>
+				<label for="password">비밀번호</label>
+			</div>
+			<div class="btn-area">
+				<button id="btn">로그인</button>
+			</div>
+
+		</section>
+		<img id="copyRight" th:src="@{/image/copyright_hyundai.png}" alt="copyRight">
+	</div>
+
+
+	<!-- 나의 js 추가 외부 라이브러리는 body 밑에 놔둬라-->
+	<script type="text/javascript" th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/login.js}"></script>
+</body>
+
+</html>

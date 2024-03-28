@@ -1,7 +1,6 @@
-package com.theono.securitywithjwt.dto;
+package com.theono.securitywithjwt.model.dto;
 
-import com.theono.securitywithjwt.entity.UserEntity;
-import lombok.RequiredArgsConstructor;
+import com.theono.securitywithjwt.model.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,7 +11,7 @@ public class CustomUserDetails implements UserDetails {
 
     private final UserEntity userEntity;
 
-    public CustomUserDetails(UserEntity userEntity){
+    public CustomUserDetails(UserEntity userEntity) {
         this.userEntity = userEntity;
     }
 
@@ -21,12 +20,13 @@ public class CustomUserDetails implements UserDetails {
 
         Collection<GrantedAuthority> collection = new ArrayList<>();
 
-        collection.add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return userEntity.getRole();
-            }
-        });
+        collection.add(
+                new GrantedAuthority() {
+                    @Override
+                    public String getAuthority() {
+                        return userEntity.getRole();
+                    }
+                });
 
         return collection;
     }
@@ -38,7 +38,11 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userEntity.getUsername();
+        return null;
+    }
+
+    public String getUserId() {
+        return userEntity.getUserId();
     }
 
     @Override

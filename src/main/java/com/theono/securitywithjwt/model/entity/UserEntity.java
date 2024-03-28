@@ -1,4 +1,4 @@
-package com.theono.securitywithjwt.entity;
+package com.theono.securitywithjwt.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,12 +18,12 @@ public class UserEntity {
     private long id;
 
     @Column(unique = true)
-    private String username;
+    private String userId;
     private String password;
     private String role;
 
-    public UserEntity(String username, String password, String role) {
-        this.username = username;
+    public UserEntity(String userId, String password, String role) {
+        this.userId = userId;
         this.password = password;
         this.role = role;
     }

@@ -111,6 +111,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             UserDetails userDetails = userDetailsSService.loadUserByUsername(userId);
 
+            System.out.println("조회 결과 : "+userDetails.getPassword());
+
             return new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities());
         } catch (RuntimeException e) {

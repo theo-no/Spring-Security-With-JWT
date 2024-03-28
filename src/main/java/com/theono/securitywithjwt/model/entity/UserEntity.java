@@ -19,14 +19,7 @@ public class UserEntity {
 
     @Column(unique = true)
     private String userId;
+
     private String password;
     private String role;
-
-    public UserEntity(String userId, String password, String role) {
-        this.userId = userId;
-        this.password = password;
-        this.role = role;
-    }
-
-
 }

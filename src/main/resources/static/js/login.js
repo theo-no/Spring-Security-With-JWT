@@ -26,15 +26,16 @@ $(btn).on('click', function(){
 		    loginRequest,
 		    null,
             function(response){
-                alert("로그인 성공");
+                console.log(response);
                 console.log(response.responseJSON); //응답 객체 뽑기
                 console.log(response.getResponseHeader('Authorization')); //access token 얻기
                 localStorage.setItem('access token',response.getResponseHeader('Authorization').split(' ')[1]); //local storage에 access token 저장
                 localStorage.setItem('userId', response.responseJSON.userId);
+                alert("로그인 성공");
                 window.location.href = "/user";
             },
             function(response){
-                console.log(response.status);
+                console.log(response);
             }
 		);
 	}
@@ -53,7 +54,7 @@ function sendAjaxRequest(url, type, requestData, params,
 	    },
 	    complete: function(response) {
             if (response.status === 200) {
-              successCallback(response, response.responseJSON.data);
+              successCallback(response);
             } else {
               errorCallback(response);
             }

@@ -1,6 +1,8 @@
 package com.theono.securitywithjwt.filter;
 
 import com.theono.securitywithjwt.constant.AuthErrorCode;
+import com.theono.securitywithjwt.constant.ErrorCase;
+import com.theono.securitywithjwt.exception.ErrorStatusException;
 import com.theono.securitywithjwt.model.entity.UserEntity;
 import com.theono.securitywithjwt.service.CustomUserDetailsService;
 import com.theono.securitywithjwt.util.JwtUtil;
@@ -72,26 +74,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             jwtUtil.isExpired(accessToken);
         } catch (ExpiredJwtException e) {
-
-            // response header
-            response.setHeader("errorCode", AuthErrorCode.ACCESS_TOKEN_EXPIRED.getErrorCode());
-
-            // response status code
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            throw new ErrorStatusException(ErrorCase._401_ACCESS_TOKEN_EXPIRED);
         }
 
         // 토큰이 access인지 확인 (발급시 페이로드에 명시)
         String category = jwtUtil.getCategory(accessToken);
 
         if (!category.equals("access")) {
-
-            // response header
-            response.setHeader("errorCode", AuthErrorCode.INVALID_ACCESS_TOKEN.getErrorCode());
-
-            // response status code
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            throw new ErrorStatusException(ErrorCase._401_INVALID_ACCESS_TOKEN);
         }
 
         // userId, role 값을 획득
@@ -111,11 +101,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             UserDetails userDetails = userDetailsSService.loadUserByUsername(userId);
 
-            System.out.println("조회 결과 : "+userDetails.getPassword());
-
             return new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities());
-        } catch (RuntimeException e) {
+        } catch (RuntimeException e) { // TODO 여기 어떻게 Exception 처리해줄지
             throw new RuntimeException(e.getMessage());
         }
     }

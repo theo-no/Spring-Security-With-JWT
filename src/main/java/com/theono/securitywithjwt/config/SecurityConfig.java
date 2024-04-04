@@ -1,7 +1,9 @@
 package com.theono.securitywithjwt.config;
 
-import com.theono.securitywithjwt.filter.IdPasswordAuthenticationFilter;
+import com.theono.securitywithjwt.filter.HandleErrorStatusExceptionFilter;
 import com.theono.securitywithjwt.filter.JwtAuthenticationFilter;
+import com.theono.securitywithjwt.filter.JwtRefreshFilter;
+import com.theono.securitywithjwt.filter.LoginAuthenticationFilter;
 import com.theono.securitywithjwt.repository.RedisRepository;
 import com.theono.securitywithjwt.service.CustomUserDetailsService;
 import com.theono.securitywithjwt.util.JwtUtil;
@@ -41,16 +43,10 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         request -> {
-                            request.requestMatchers(HttpMethod.GET, "/user/info")
-                                    .hasAnyRole("USER")
-                                    .requestMatchers(
-                                            HttpMethod.GET,
-                                            "/login",
-                                            "/webjars/jquery/**",
-                                            "/js/**",
-                                            "/css/**",
-                                            "/image/**")
+                            request.requestMatchers(HttpMethod.GET)
                                     .permitAll()
+                                    .requestMatchers(HttpMethod.GET, "/user/info")
+                                    .hasAnyRole("USER")
                                     .requestMatchers(HttpMethod.POST, "/login")
                                     .permitAll();
                         })
@@ -79,14 +75,20 @@ public class SecurityConfig {
         @Override
         public void configure(HttpSecurity http) throws Exception {
             http.addFilterAt(
-                            new IdPasswordAuthenticationFilter(
+                            new HandleErrorStatusExceptionFilter(),
+                            UsernamePasswordAuthenticationFilter.class)
+                    .addFilterAfter(
+                            new LoginAuthenticationFilter(
                                     http.getSharedObject(AuthenticationManager.class),
                                     jwtUtil,
                                     redisRepository),
-                            UsernamePasswordAuthenticationFilter.class)
+                            HandleErrorStatusExceptionFilter.class)
                     .addFilterAfter(
                             new JwtAuthenticationFilter(jwtUtil, userDetailsService),
-                            IdPasswordAuthenticationFilter.class);
+                            LoginAuthenticationFilter.class)
+                    .addFilterAfter(
+                            new JwtRefreshFilter(redisRepository, jwtUtil),
+                            JwtAuthenticationFilter.class);
         }
     }
 }

@@ -15,6 +15,24 @@ if((/.*/).test(window.location.href)){
 
 }
 
+$($('#button_info')).on('click', function(){
+    console.log("click");
+    sendAjaxRequest(
+        "user/info",
+        "GET",
+        null,
+        null,
+        function(response){
+            console.log("유저 정보 조회 성공");
+            //console.log(response.responseJSON.data); // TODO response.responseJSON.data가 응답된 dto -> 함수 개선 필요
+        },
+        function(response){
+            console.log(response);
+            console.log("유저 정보 조회 실패");
+        }
+    )
+});
+
 //ajax 호출 공통 함수
 function sendAjaxRequest(url, type, requestData, params,
 	successCallback, errorCallback){
@@ -50,9 +68,11 @@ function sendAjaxRequest(url, type, requestData, params,
 // 응답에 대해 공통 로직
 $(document).ajaxComplete(function(event, xhr, settings) {
     if (xhr.status === 401) { //401 에러 발생
-        var errorCode = xhr.getResponseHeader('errorCode');
+        var errorCode = xhr.responseJSON.errorCode;
         switch(errorCode){
-            case "Auth-001": // access token 만료
+            case "401-000": //authentication 인증 실패
+                break;
+            case "401-001": // access token 만료
                 console.log("access token 만료");
                     sendAjaxRequest(
                        "/reissue",
@@ -72,37 +92,37 @@ $(document).ajaxComplete(function(event, xhr, settings) {
                        }
                    )
                    break;
-            case "Auth-002": // 유효하지 않은 access token
+            case "401-002": // 유효하지 않은 access token
                 break;
-            case "Auth-003": // refresh token 만료
+            case "401-003": // refresh token 만료
                 //로그아웃 처리
                 alert("refresh token 만료");
                 localStorage.removeItem('access token');
                 localStorage.removeItem('userId');
                 window.location.href = "/login";
                 break;
-            case "Auth-004": // 유효하지 않은 refresh token
+            case "401-004": // 유효하지 않은 refresh token
                 //로그아웃 처리
                 alert("invalid refresh token");
                 localStorage.removeItem('access token');
                 localStorage.removeItem('userId');
                 window.location.href = "/login";
                 break;
-            case "Auth-005": // refresh token 서버에 없음
+            case "401-005": // refresh token 서버에 없음
                 //로그아웃 처리
                 alert("refresh token not found");
                 localStorage.removeItem('access token');
                 localStorage.removeItem('userId');
                 window.location.href = "/login";
                 break;
-            case "Auth-006": // refresh token이 null
+            case "401-006": // refresh token이 null
                 //로그아웃 처리
                 alert("refresh token null");
                 localStorage.removeItem('access token');
                 localStorage.removeItem('userId');
                 window.location.href = "/login";
                 break;
-            case "Auth-007": // userId이 null TODO 나중에는 접근할 수 있는 KEY가 없음으로 변경
+            case "401-007": // userId이 null TODO 나중에는 접근할 수 있는 KEY가 없음으로 변경
                 break;
         }
     }
